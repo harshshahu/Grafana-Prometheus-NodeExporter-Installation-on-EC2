@@ -45,3 +45,97 @@ http://<EC2-PUBLIC-IP>:3000
 * Password: `admin`
 
 ---
+
+## 🔹 Step 4: Install WinSCP and Download Prometheus Setup | LTS/Linux
+## WinSCP  >> Install 
+https://winscp.net/eng/download.php
+
+## Download Prometheus Setup | LTS/Linux
+https://prometheus.io/download/
+
+
+## 🔹 Step 5: Copy Prometheus Binary to EC2
+
+### SCP from Local Machine (macOS/Linux)
+
+```bash
+scp -i /Users/atul/Downloads/monitor.pem \
+/Users/atul/Downloads/prometheus-3.5.1.linux-amd64.tar.gz \
+ec2-user@ec2-174-129-108-160.compute-1.amazonaws.com:/home/ec2-user/
+```
+
+---
+
+## 🔹 Step 6: Move & Extract Prometheus
+
+```bash
+sudo mv prometheus-3.5.1.linux-amd64.tar.gz /opt
+cd /opt
+sudo tar -xvf prometheus-3.5.1.linux-amd64.tar.gz
+sudo mv prometheus-3.5.1.linux-amd64 prometheus
+sudo rm prometheus-3.5.1.linux-amd64.tar.gz
+```
+
+---
+
+## 🔹 Step 7: Create Prometheus System User
+
+```bash
+sudo useradd --no-create-home --shell /bin/false prometheus
+```
+
+---
+
+## 🔹 Step 8: Configure Prometheus Directories
+
+```bash
+cd /opt/prometheus
+
+sudo cp prometheus /usr/local/bin/
+sudo cp promtool /usr/local/bin/
+
+sudo mkdir /etc/prometheus
+sudo mkdir /var/lib/prometheus
+
+sudo cp prometheus.yml /etc/prometheus/
+```
+
+### Set Permissions
+
+```bash
+sudo chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus
+sudo chown prometheus:prometheus /usr/local/bin/prometheus
+sudo chown prometheus:prometheus /usr/local/bin/promtool
+```
+
+---
+
+## 🔹 Step 9: Create Prometheus systemd Service
+
+```bash
+sudo nano /etc/systemd/system/prometheus.service
+```
+
+### 📄 Paste the Following Configuration
+
+```ini
+[Unit]
+Description=Prometheus Monitoring
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/var/lib/prometheus \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
