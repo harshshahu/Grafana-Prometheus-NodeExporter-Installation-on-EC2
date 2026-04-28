@@ -140,3 +140,40 @@ WantedBy=multi-user.target
 ```
 
 ---
+
+## 🔹 Step 10: Update Prometheus Config
+
+edit config file 
+```
+sudo nano /etc/prometheus/prometheus.yml
+```
+```
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets: ["localhost:9100"]
+```
+
+Start Prometheus Service
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable prometheus
+sudo systemctl start prometheus
+sudo systemctl status prometheus
+```
+
+✅ **Prometheus Web UI**
+
+```
+http://<EC2-PUBLIC-IP>:9090
+```
+---
