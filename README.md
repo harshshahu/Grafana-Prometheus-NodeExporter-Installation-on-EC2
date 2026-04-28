@@ -181,9 +181,98 @@ http://<EC2-PUBLIC-IP>:9090
 
 ## 🔹 Step 11: Add Data Source in Grafana
 
+```
 1. go to grafana weblink http://public-ip:3000/
 2. click on 'data sources'
 3. click on 'prometheus'
 4. Prometheus server URL: http://localhost:9090
 5. save and test
 6. you will see: Successfully queried the Prometheus API.
+```
+
+---
+
+## 🔹 Step 12: Download Node Exporter & Extract
+
+```bash
+wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
+tar xvfz node_exporter-1.10.2.linux-amd64.tar.gz
+cd node_exporter-1.10.2.linux-amd64
+```
+
+---
+
+## 🔹 Step 13: Run Manually (Test)
+
+```bash
+./node_exporter
+```
+
+👉 Access in browser:
+
+```
+http://<Public-IP>:9100/metrics
+```
+
+you will see 'Node Exporter' Page but the problem is when I type: Ctrl+c, node exporter will also stoped.
+So we will make a service so it runs continuously.
+
+---
+
+## 🔹 Step 14: Install Binary & Create User
+
+```bash
+sudo cp node_exporter /usr/local/bin
+sudo useradd node_exporter --no-create-home --shell /bin/false
+sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
+```
+
+---
+
+## 🔹 Step 15: Create Systemd Service
+
+```bash
+sudo vi /etc/systemd/system/node_exporter.service
+```
+
+### Add below content:
+
+```ini
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+```
+
+---
+
+## 🔹 Step 16: Start & Enable Service
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start node_exporter
+sudo systemctl enable node_exporter
+sudo systemctl status node_exporter
+```
+
+---
+
+## 🔹 Step 17: Verify
+
+Open browser:
+
+```
+http://<SERVER-IP>:9100/metrics
+```
+
+✔ You should see system metrics output
+
+---
