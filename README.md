@@ -177,3 +177,13 @@ sudo systemctl status prometheus
 http://<EC2-PUBLIC-IP>:9090
 ```
 ---
+
+
+## 🔹 Step 11: Add Data Source in Grafana
+
+1. go to grafana weblink http://public-ip:3000/
+2. click on 'data sources'
+3. click on 'prometheus'
+4. Prometheus server URL: http://localhost:9090
+5. save and test
+6. you will see: Successfully queried the Prometheus API.
