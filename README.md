@@ -232,7 +232,7 @@ sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
 ## 🔹 Step 15: Create Systemd Service
 
 ```bash
-sudo vi /etc/systemd/system/node_exporter.service
+sudo nano /etc/systemd/system/node_exporter.service
 ```
 
 ### Add below content:
@@ -270,7 +270,7 @@ sudo systemctl status node_exporter
 Open browser:
 
 ```
-http://<SERVER-IP>:9100/metrics
+http://<Public-IP>:9100/metrics
 ```
 
 ✔ You should see system metrics output
