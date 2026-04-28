@@ -59,14 +59,15 @@ https://prometheus.io/download/
 ### SCP from Local Machine (macOS/Linux)
 
 ```bash
-scp -i /Users/atul/Downloads/monitor.pem \
-/Users/atul/Downloads/prometheus-3.5.1.linux-amd64.tar.gz \
-ec2-user@ec2-174-129-108-160.compute-1.amazonaws.com:/home/ec2-user/
+scp -i ansible.pem prometheus-3.5.3.linux-amd64.tar.gz \
+ec2-user@3.7.66.154:/home/ec2-user/
 ```
 
 ---
 
 ## 🔹 Step 6: Move & Extract Prometheus
+
+login to your ec2 and type below:
 
 ```bash
 sudo mv prometheus-3.5.1.linux-amd64.tar.gz /opt
